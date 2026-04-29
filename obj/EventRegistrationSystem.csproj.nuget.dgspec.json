@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/samnang/Downloads/G5 - Proje.CADT -user dashboard/EventRegistrationSystem/EventRegistrationSystem.csproj": {}
+    "C:\\Users\\ADMIN\\Desktop\\G5 - Proje.CADT - 2026-04-28\\EventRegistrationSystem\\EventRegistrationSystem.csproj": {}
   },
   "projects": {
-    "/Users/samnang/Downloads/G5 - Proje.CADT -user dashboard/EventRegistrationSystem/EventRegistrationSystem.csproj": {
+    "C:\\Users\\ADMIN\\Desktop\\G5 - Proje.CADT - 2026-04-28\\EventRegistrationSystem\\EventRegistrationSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/samnang/Downloads/G5 - Proje.CADT -user dashboard/EventRegistrationSystem/EventRegistrationSystem.csproj",
+        "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\G5 - Proje.CADT - 2026-04-28\\EventRegistrationSystem\\EventRegistrationSystem.csproj",
         "projectName": "EventRegistrationSystem",
-        "projectPath": "/Users/samnang/Downloads/G5 - Proje.CADT -user dashboard/EventRegistrationSystem/EventRegistrationSystem.csproj",
-        "packagesPath": "/Users/samnang/.nuget/packages/",
-        "outputPath": "/Users/samnang/Downloads/G5 - Proje.CADT -user dashboard/EventRegistrationSystem/obj/",
+        "projectPath": "C:\\Users\\ADMIN\\Desktop\\G5 - Proje.CADT - 2026-04-28\\EventRegistrationSystem\\EventRegistrationSystem.csproj",
+        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ADMIN\\Desktop\\G5 - Proje.CADT - 2026-04-28\\EventRegistrationSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/samnang/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,8 +37,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.200"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -70,20 +69,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.osx-arm64",
-              "version": "[8.0.25, 8.0.25]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.25, 8.0.25]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -92,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.420/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
