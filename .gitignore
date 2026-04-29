@@ -1,0 +1,92 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options
+.vs/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Test Results
+TestResults/
+*.trx
+
+# NUnit
+nunit_*.xml
+
+# ReSharper
+.idea/
+*.DotSettings
+*.DotSettings.user
+_ReSharper*/
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Entity Framework
+Migrations/*
+!Migrations/.gitkeep
+
+# Application settings
+appsettings.Development.json
+appsettings.Production.json
+
+# File uploads
+wwwroot/uploads/
+!wwwroot/uploads/.gitkeep
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# Node modules (if using npm)
+node_modules/
+npm-debug.log
+
+# Misc
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
