@@ -1,0 +1,50 @@
+@model RegisterPageViewModel
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<div class="mx-auto max-w-lg py-8">
+    <div class="mb-10 text-center">
+        <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white shadow-lg">
+            <span class="material-symbols-outlined text-4xl">person_add</span>
+        </div>
+        <h1 class="text-5xl font-black tracking-tight">Create your account</h1>
+        <p class="mt-4 text-on-surface-variant">Sign up with a secure password and start managing registrations or joining events.</p>
+    </div>
+
+    <div class="rounded-[2rem] bg-surface-container-lowest p-8 shadow-[0_24px_60px_-24px_rgba(53,37,205,0.16)] md:p-10">
+        <form asp-action="Register" method="post" class="space-y-6">
+            <div asp-validation-summary="ModelOnly"></div>
+            <div>
+                <label asp-for="Form.DisplayName" class="mb-2 block text-sm font-semibold text-on-surface"></label>
+                <input asp-for="Form.DisplayName" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary-container" placeholder="Taylor Rivers" />
+                <span asp-validation-for="Form.DisplayName"></span>
+            </div>
+            <div>
+                <label asp-for="Form.Email" class="mb-2 block text-sm font-semibold text-on-surface"></label>
+                <input asp-for="Form.Email" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary-container" placeholder="name@company.com" />
+                <span asp-validation-for="Form.Email"></span>
+            </div>
+            <div>
+                <label asp-for="Form.Password" class="mb-2 block text-sm font-semibold text-on-surface"></label>
+                <input asp-for="Form.Password" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary-container" placeholder="••••••••••••" />
+                <span asp-validation-for="Form.Password"></span>
+            </div>
+            <div>
+                <label asp-for="Form.ConfirmPassword" class="mb-2 block text-sm font-semibold text-on-surface"></label>
+                <input asp-for="Form.ConfirmPassword" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary-container" placeholder="••••••••••••" />
+                <span asp-validation-for="Form.ConfirmPassword"></span>
+            </div>
+            <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-primary to-primary-container px-6 py-4 text-lg font-bold text-white shadow-lg shadow-primary/10 transition hover:shadow-xl">Create account</button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-on-surface-variant">
+            Already have an account?
+            <a asp-action="Login" class="font-semibold text-primary transition hover:text-primary-container">Sign in</a>.
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

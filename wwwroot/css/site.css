@@ -1,0 +1,35 @@
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.field-validation-error {
+  color: #93000a;
+  display: block;
+  font-size: 0.875rem;
+  margin-top: 0.35rem;
+}
+
+.input-validation-error {
+  outline: 2px solid rgba(186, 26, 26, 0.35);
+}
+
+.validation-summary-errors {
+  background: #ffdad6;
+  border-radius: 1rem;
+  color: #93000a;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.validation-summary-errors ul {
+  margin: 0;
+  padding-left: 1rem;
+}

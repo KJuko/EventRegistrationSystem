@@ -1,0 +1,94 @@
+﻿@model HomePageViewModel
+@{
+    ViewData["Title"] = "Explore Events";
+}
+
+<section class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+    <div class="space-y-6">
+        <div class="inline-flex items-center gap-2 rounded-full bg-primary-fixed px-4 py-2 text-sm font-semibold text-on-primary-fixed-variant">
+            <span class="material-symbols-outlined text-base">auto_awesome</span>
+            Event Registration System
+        </div>
+        <h1 class="max-w-3xl text-5xl font-black tracking-tight text-on-surface md:text-7xl">Create, publish, and track registrations without losing the premium feel of your HTML screens.</h1>
+        <p class="max-w-2xl text-lg leading-8 text-on-surface-variant">
+            Organizers can launch event pages, manage schedules, curate media, and review attendee activity in real time.
+            Participants can browse events, register online, and come back to a clean personal dashboard.
+        </p>
+        <div class="flex flex-wrap items-center gap-4">
+            <a asp-controller="Events" asp-action="Dashboard" class="rounded-full bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/10 transition hover:bg-primary-container">Browse My Events</a>
+            <a asp-controller="Organizer" asp-action="Dashboard" class="rounded-full bg-surface-container-lowest px-6 py-3 text-sm font-bold text-on-surface shadow-sm transition hover:bg-surface-container-high">Open Organizer Tools</a>
+            <a asp-controller="Auth" asp-action="Login" class="text-sm font-semibold text-primary transition hover:text-primary-container">Sign in to switch roles</a>
+        </div>
+    </div>
+    <div class="rounded-[2rem] bg-primary-container p-8 text-white shadow-[0_24px_64px_-24px_rgba(53,37,205,0.45)]">
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-on-primary-container">Core Flow</p>
+                <h2 class="mt-2 text-2xl font-bold">Connected frontend screens</h2>
+            </div>
+            <span class="material-symbols-outlined text-4xl">sync_alt</span>
+        </div>
+        <div class="space-y-4">
+            <div class="rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <p class="text-sm font-semibold">1. Organizer creates the event</p>
+                <p class="mt-1 text-sm text-on-primary-container">Use the create, schedule, and media screens from the new ASP.NET MVC routes.</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <p class="text-sm font-semibold">2. Attendee visits the event page</p>
+                <p class="mt-1 text-sm text-on-primary-container">Review sessions, location, and availability before registering.</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-4 backdrop-blur">
+                <p class="text-sm font-semibold">3. Registration appears in dashboards</p>
+                <p class="mt-1 text-sm text-on-primary-container">The PostgreSQL-backed backend updates organizer and attendee views immediately.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mt-16">
+    <div class="mb-6 flex items-end justify-between gap-4">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Featured events</p>
+            <h2 class="mt-2 text-3xl font-black tracking-tight">Browse the seeded catalog</h2>
+        </div>
+        <a asp-controller="Organizer" asp-action="Create" class="text-sm font-semibold text-primary transition hover:text-primary-container">Create a new event</a>
+    </div>
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        @foreach (var eventItem in Model.FeaturedEvents)
+        {
+            <article class="overflow-hidden rounded-[1.5rem] bg-surface-container-lowest shadow-[0_20px_50px_-30px_rgba(53,37,205,0.25)] transition hover:-translate-y-1 hover:shadow-[0_28px_60px_-30px_rgba(53,37,205,0.3)]">
+                <div class="aspect-[16/10] overflow-hidden">
+                    <img src="@eventItem.CoverImageUrl" alt="@eventItem.Title" class="h-full w-full object-cover" />
+                </div>
+                <div class="space-y-4 p-6">
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-on-primary-fixed-variant">@eventItem.Category</span>
+                        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">@eventItem.Status</span>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold tracking-tight text-on-surface">@eventItem.Title</h3>
+                        <p class="mt-2 text-sm leading-7 text-on-surface-variant">@eventItem.Summary</p>
+                    </div>
+                    <dl class="grid gap-3 text-sm text-on-surface-variant">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary">calendar_today</span>
+                            <span>@eventItem.DateRangeText</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary">location_on</span>
+                            <span>@eventItem.Location</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary">groups</span>
+                            <span>@eventItem.Registrations.Count attendees registered</span>
+                        </div>
+                    </dl>
+                    <div class="flex items-center justify-between pt-2">
+                        <a asp-controller="Events" asp-action="Details" asp-route-id="@eventItem.Id" class="text-sm font-bold text-primary transition hover:text-primary-container">View event details</a>
+                        <span class="text-sm font-semibold text-on-surface">$@eventItem.TicketPrice</span>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+</section>

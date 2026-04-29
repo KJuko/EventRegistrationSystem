@@ -1,0 +1,65 @@
+@model AdminCreateUserPageViewModel
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<section class="mb-10">
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Super admin</p>
+    <h1 class="mt-3 text-5xl font-black tracking-tight">Create user account</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-on-surface-variant">Provision a new account with secure credentials and role-based access from the start.</p>
+</section>
+
+<form asp-action="CreateUser" method="post" class="grid gap-8 lg:grid-cols-[0.62fr_0.38fr]">
+    <div class="rounded-[1.75rem] bg-surface-container-lowest p-8 shadow-sm">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="mt-6 grid gap-5 md:grid-cols-2">
+            <div class="md:col-span-2">
+                <label asp-for="Form.DisplayName" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.DisplayName" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                <span asp-validation-for="Form.DisplayName"></span>
+            </div>
+            <div class="md:col-span-2">
+                <label asp-for="Form.Email" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.Email" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                <span asp-validation-for="Form.Email"></span>
+            </div>
+            <div>
+                <label asp-for="Form.Password" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.Password" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                <span asp-validation-for="Form.Password"></span>
+            </div>
+            <div>
+                <label asp-for="Form.ConfirmPassword" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.ConfirmPassword" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                <span asp-validation-for="Form.ConfirmPassword"></span>
+            </div>
+        </div>
+    </div>
+
+    <aside class="space-y-8">
+        <div class="rounded-[1.75rem] bg-primary p-7 text-white shadow-[0_24px_64px_-24px_rgba(53,37,205,0.45)]">
+            <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-primary-container">Role access</p>
+            <div class="mt-6 space-y-3">
+                @for (var index = 0; index < Model.RoleOptions.Count; index++)
+                {
+                    <label class="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3.5 text-sm font-semibold">
+                        <input type="checkbox" name="Form.Roles" value="@Model.RoleOptions[index].Name" checked="@Model.RoleOptions[index].IsSelected" class="h-4 w-4 rounded text-white focus:ring-white" />
+                        @Model.RoleOptions[index].Name
+                    </label>
+                }
+            </div>
+            <label class="mt-6 flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3.5 text-sm font-semibold">
+                <input asp-for="Form.IsActive" class="h-4 w-4 rounded text-white focus:ring-white" />
+                Keep account active
+            </label>
+        </div>
+        <div class="flex gap-3">
+            <button type="submit" class="flex-1 rounded-full bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-container">Create user</button>
+            <a asp-action="Users" class="rounded-full bg-surface-container-high px-5 py-3 text-sm font-bold text-on-surface transition hover:bg-surface-dim">Cancel</a>
+        </div>
+    </aside>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

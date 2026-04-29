@@ -1,0 +1,69 @@
+@model ManageAccountViewModel
+@{
+    ViewData["Title"] = "Account";
+}
+
+<section class="mb-10">
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Identity</p>
+    <h1 class="mt-3 text-5xl font-black tracking-tight">Manage your account</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-on-surface-variant">Update your display name, review your roles, and rotate your password from one secure workspace.</p>
+</section>
+
+<div class="grid gap-8 lg:grid-cols-[0.42fr_0.58fr]">
+    <aside class="rounded-[1.75rem] bg-primary p-8 text-white shadow-[0_24px_64px_-24px_rgba(53,37,205,0.45)]">
+        <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-primary-container">Profile summary</p>
+        <h2 class="mt-3 text-3xl font-black">@Model.ProfileForm.DisplayName</h2>
+        <p class="mt-3 text-on-primary-container">@Model.ProfileForm.Email</p>
+        <div class="mt-8 space-y-3">
+            @foreach (var role in Model.Roles)
+            {
+                <div class="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold">@role</div>
+            }
+        </div>
+    </aside>
+
+    <div class="space-y-8">
+        <form asp-action="UpdateProfile" method="post" class="rounded-[1.75rem] bg-surface-container-lowest p-8 shadow-sm">
+            <h2 class="text-2xl font-bold">Profile details</h2>
+            <div asp-validation-summary="ModelOnly" class="mt-6"></div>
+            <div class="mt-6 space-y-5">
+                <div>
+                    <label asp-for="ProfileForm.DisplayName" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="ProfileForm.DisplayName" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                    <span asp-validation-for="ProfileForm.DisplayName"></span>
+                </div>
+                <div>
+                    <label asp-for="ProfileForm.Email" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="ProfileForm.Email" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 text-on-surface-variant" readonly />
+                </div>
+                <button type="submit" class="rounded-full bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-container">Save profile</button>
+            </div>
+        </form>
+
+        <form asp-action="ChangePassword" method="post" class="rounded-[1.75rem] bg-surface-container-lowest p-8 shadow-sm">
+            <h2 class="text-2xl font-bold">Change password</h2>
+            <div class="mt-6 space-y-5">
+                <div>
+                    <label asp-for="PasswordForm.CurrentPassword" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="PasswordForm.CurrentPassword" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                    <span asp-validation-for="PasswordForm.CurrentPassword"></span>
+                </div>
+                <div>
+                    <label asp-for="PasswordForm.NewPassword" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="PasswordForm.NewPassword" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                    <span asp-validation-for="PasswordForm.NewPassword"></span>
+                </div>
+                <div>
+                    <label asp-for="PasswordForm.ConfirmNewPassword" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="PasswordForm.ConfirmNewPassword" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                    <span asp-validation-for="PasswordForm.ConfirmNewPassword"></span>
+                </div>
+                <button type="submit" class="rounded-full bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-container">Update password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

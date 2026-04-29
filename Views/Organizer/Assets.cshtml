@@ -1,0 +1,94 @@
+@model AssetLibraryViewModel
+@{
+    ViewData["Title"] = "Asset Library";
+}
+
+<section class="mb-10">
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Folder management</p>
+    <h1 class="mt-3 text-5xl font-black tracking-tight">Asset library</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-on-surface-variant">A read-only organizer view for folders and stored assets. This mirrors the media folder management concept while staying backed by the same repository.</p>
+</section>
+
+<div class="grid gap-8 lg:grid-cols-[0.34fr_0.66fr]">
+    <aside class="rounded-[1.75rem] bg-surface-container-lowest p-7 shadow-sm">
+        <div class="mb-6 flex items-center justify-between gap-4">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary">Folders</p>
+                <h2 class="mt-2 text-2xl font-bold">@Model.Event.MediaFolders.Count collections</h2>
+            </div>
+            <a asp-action="Media" asp-route-id="@Model.Event.Id" class="text-sm font-semibold text-primary transition hover:text-primary-container">Back to media</a>
+        </div>
+        <div class="space-y-4">
+            @foreach (var folder in Model.Event.MediaFolders.OrderBy(folder => folder.Name))
+            {
+                var assetCount = Model.Event.MediaAssets.Count(asset => string.Equals(asset.FolderName, folder.Name, StringComparison.OrdinalIgnoreCase));
+                <article class="rounded-2xl bg-surface-container-low p-4">
+                    <div class="flex items-start gap-4">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-fixed text-primary">
+                            <span class="material-symbols-outlined">folder_open</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">@folder.Name</h3>
+                            <p class="mt-1 text-sm text-on-surface-variant">@folder.Description</p>
+                            <p class="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">@assetCount assets • created @folder.CreatedAtUtc.ToLocalTime().ToString("MMM dd")</p>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </aside>
+
+    <section class="rounded-[1.75rem] bg-surface-container-lowest p-7 shadow-sm">
+        <div class="mb-6 flex items-center justify-between gap-4">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary">Library</p>
+                <h2 class="mt-2 text-2xl font-bold">@Model.Event.MediaAssets.Count total assets</h2>
+            </div>
+            <span class="rounded-full bg-surface-container-low px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">@Model.Event.Title</span>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            @foreach (var asset in Model.Event.MediaAssets)
+            {
+                <article class="overflow-hidden rounded-[1.5rem] bg-surface-container-low">
+                    <div class="aspect-video overflow-hidden bg-surface-container-high">
+                        @if (asset.Kind == MediaAssetKind.Image)
+                        {
+                            <img src="@asset.Url" alt="@asset.FileName" class="h-full w-full object-cover" />
+                        }
+                        else if (asset.Kind == MediaAssetKind.Video)
+                        {
+                            <video src="@asset.Url" class="h-full w-full object-cover" controls preload="metadata"></video>
+                        }
+                        else
+                        {
+                            <div class="flex h-full items-center justify-center p-6 text-center">
+                                <div>
+                                    <span class="material-symbols-outlined text-5xl text-primary">description</span>
+                                    <p class="mt-3 text-sm font-semibold text-on-surface">@asset.FileName</p>
+                                    <a href="@asset.Url" target="_blank" rel="noreferrer" class="mt-3 inline-flex rounded-full bg-primary px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-white">Open file</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="space-y-3 p-5">
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <h3 class="text-sm font-bold">@asset.FileName</h3>
+                                <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">@asset.Kind • @asset.SizeInMb MB</p>
+                            </div>
+                            @if (asset.IsCover)
+                            {
+                                <span class="rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-white">Cover</span>
+                            }
+                        </div>
+                        <p class="text-sm text-on-surface-variant">@asset.Description</p>
+                        <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">
+                            <span>@asset.FolderName</span>
+                            <span>@asset.UploadedAtUtc.ToLocalTime().ToString("MMM dd, HH:mm")</span>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+</div>

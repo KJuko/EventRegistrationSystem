@@ -1,0 +1,135 @@
+@model SchedulePageViewModel
+@{
+    ViewData["Title"] = "Schedule Builder";
+}
+
+<section class="mb-10">
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Schedule configuration</p>
+    <h1 class="mt-3 text-5xl font-black tracking-tight">Set event schedule</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-on-surface-variant">Add individual sessions to the event agenda. The controller stores each new block in PostgreSQL and refreshes the view instantly.</p>
+</section>
+
+<div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+    <form asp-action="Schedule" asp-route-id="@Model.Event.Id" method="post" class="space-y-8 rounded-[1.75rem] bg-surface-container-lowest p-8 shadow-sm">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="grid gap-6 md:grid-cols-2">
+            <div class="md:col-span-2">
+                <label asp-for="Form.Title" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.Title" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Cloud Native Security Masterclass" />
+                <span asp-validation-for="Form.Title"></span>
+            </div>
+            <div>
+                <label asp-for="Form.Date" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.Date" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                <span asp-validation-for="Form.Date"></span>
+            </div>
+            <div>
+                <label asp-for="Form.Track" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.Track" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Workshop or keynote" />
+                <span asp-validation-for="Form.Track"></span>
+            </div>
+            <div>
+                <label asp-for="Form.StartTime" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.StartTime" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                <span asp-validation-for="Form.StartTime"></span>
+            </div>
+            <div>
+                <label asp-for="Form.EndTime" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.EndTime" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                <span asp-validation-for="Form.EndTime"></span>
+            </div>
+            <div>
+                <label asp-for="Form.Speaker" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.Speaker" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Presenter or panelist" />
+                <span asp-validation-for="Form.Speaker"></span>
+            </div>
+            <div>
+                <label asp-for="Form.Room" class="mb-2 block text-sm font-semibold"></label>
+                <input asp-for="Form.Room" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Stage or room name" />
+                <span asp-validation-for="Form.Room"></span>
+            </div>
+        </div>
+
+        <div class="rounded-2xl bg-surface-container-low p-5">
+            <div class="flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold">Recurrence</h2>
+                    <p class="mt-1 text-sm text-on-surface-variant">Optional metadata for repeated event blocks.</p>
+                </div>
+                <label class="flex items-center gap-3 text-sm font-semibold text-on-surface-variant">
+                    <input asp-for="Form.IsRecurring" class="h-4 w-4 rounded text-primary focus:ring-primary" />
+                    Repeat event
+                </label>
+            </div>
+            <div class="mt-5 grid gap-6 md:grid-cols-2">
+                <div>
+                    <label asp-for="Form.RecurrencePattern" class="mb-2 block text-sm font-semibold"></label>
+                    <select asp-for="Form.RecurrencePattern" class="w-full rounded-2xl border-0 bg-surface-container-lowest px-4 py-3.5 focus:ring-2 focus:ring-primary-container">
+                        <option>Daily</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                        <option>Custom</option>
+                    </select>
+                </div>
+                <div>
+                    <label asp-for="Form.Occurrences" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.Occurrences" class="w-full rounded-2xl border-0 bg-surface-container-lowest px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                </div>
+                <div class="md:col-span-2">
+                    <label asp-for="Form.RecurrenceEndDate" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.RecurrenceEndDate" class="w-full rounded-2xl border-0 bg-surface-container-lowest px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+            <a asp-action="Manage" asp-route-id="@Model.Event.Id" class="rounded-full bg-surface-container-high px-5 py-3 text-sm font-bold text-on-surface transition hover:bg-surface-dim">Back to overview</a>
+            <button type="submit" class="rounded-full bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-container">Add session to schedule</button>
+        </div>
+    </form>
+
+    <section class="space-y-6">
+        <div class="rounded-[1.75rem] bg-primary p-7 text-white shadow-[0_24px_64px_-24px_rgba(53,37,205,0.45)]">
+            <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-primary-container">Schedule overview</p>
+            <h2 class="mt-3 text-2xl font-bold">@Model.Event.Title</h2>
+            <p class="mt-3 text-sm leading-7 text-on-primary-container">@Model.Event.DateRangeText in @Model.Event.Location</p>
+            <div class="mt-6 grid grid-cols-2 gap-4">
+                <div class="rounded-2xl bg-white/10 p-4">
+                    <div class="text-xs font-bold uppercase tracking-[0.18em] text-on-primary-container">Sessions</div>
+                    <div class="mt-2 text-3xl font-black">@Model.Event.Sessions.Count</div>
+                </div>
+                <div class="rounded-2xl bg-white/10 p-4">
+                    <div class="text-xs font-bold uppercase tracking-[0.18em] text-on-primary-container">Timezone</div>
+                    <div class="mt-2 text-lg font-bold">@Model.Event.TimeZone</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-[1.75rem] bg-surface-container-lowest p-7 shadow-sm">
+            <h2 class="text-2xl font-bold">Current agenda</h2>
+            <div class="mt-6 space-y-4">
+                @foreach (var session in Model.Event.Sessions.OrderBy(item => item.Date).ThenBy(item => item.StartTime))
+                {
+                    <article class="rounded-2xl bg-surface-container-low p-4">
+                        <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                            <div>
+                                <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary">@session.Track</p>
+                                <h3 class="mt-2 text-lg font-bold">@session.Title</h3>
+                                <p class="mt-1 text-sm text-on-surface-variant">@session.Speaker</p>
+                            </div>
+                            <div class="text-sm font-semibold text-on-surface-variant">
+                                <div>@session.Date.ToString("MMM dd, yyyy")</div>
+                                <div class="mt-1">@session.StartTime.ToString("hh\\:mm") - @session.EndTime.ToString("hh\\:mm")</div>
+                                <div class="mt-1">@session.Room</div>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,119 @@
+@model OrganizerDashboardViewModel
+@{
+    ViewData["Title"] = "Organizer Dashboard";
+    var totalRegistrations = Model.ManagedEvents.Sum(item => item.Registrations.Count);
+    var totalRevenue = Model.ManagedEvents.Sum(item => item.Revenue);
+    var totalAssets = Model.ManagedEvents.Sum(item => item.MediaAssets.Count);
+}
+
+<section class="mb-10 grid gap-8 lg:grid-cols-[1fr_0.42fr]">
+    <div class="rounded-[2rem] bg-surface-container-low p-8">
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Organizer cockpit</p>
+        <h1 class="mt-3 text-5xl font-black tracking-tight">Lightweight ASP.NET Core controllers behind your HTML flows.</h1>
+        <p class="mt-4 max-w-3xl text-lg leading-8 text-on-surface-variant">
+            Create events, edit schedules, upload media, and monitor registrations from one backend workspace.
+            Everything on this page is served by MVC routes backed by PostgreSQL through EF Core.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+            <a asp-action="Create" class="rounded-full bg-primary px-6 py-3 text-sm font-bold text-white transition hover:bg-primary-container">Create a new event</a>
+            @if (Model.FeaturedEvent is not null)
+            {
+                <a asp-action="Manage" asp-route-id="@Model.FeaturedEvent.Id" class="rounded-full bg-surface-container-lowest px-6 py-3 text-sm font-bold text-on-surface transition hover:bg-surface-container-high">Open featured dashboard</a>
+            }
+        </div>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+        <div class="rounded-[1.75rem] bg-primary p-6 text-white shadow-[0_24px_64px_-24px_rgba(53,37,205,0.45)]">
+            <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-primary-container">Active events</p>
+            <div class="mt-4 text-5xl font-black">@Model.ManagedEvents.Count</div>
+        </div>
+        <div class="rounded-[1.75rem] bg-surface-container-lowest p-6 shadow-sm">
+            <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-surface-variant">Registrations</p>
+            <div class="mt-4 text-4xl font-black text-primary">@totalRegistrations</div>
+        </div>
+        <div class="rounded-[1.75rem] bg-surface-container-lowest p-6 shadow-sm">
+            <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-surface-variant">Media assets</p>
+            <div class="mt-4 text-4xl font-black text-primary">@totalAssets</div>
+            <p class="mt-2 text-sm text-on-surface-variant">$@totalRevenue.ToString("N0") tracked revenue</p>
+        </div>
+    </div>
+</section>
+
+@if (Model.FeaturedEvent is not null)
+{
+    <section class="mb-10 overflow-hidden rounded-[2rem] bg-surface-container-lowest shadow-[0_20px_50px_-30px_rgba(53,37,205,0.25)]">
+        <div class="grid gap-0 lg:grid-cols-[0.58fr_0.42fr]">
+            <img src="@Model.FeaturedEvent.CoverImageUrl" alt="@Model.FeaturedEvent.Title" class="h-full min-h-72 w-full object-cover" />
+            <div class="space-y-5 p-8">
+                <div class="flex items-center justify-between gap-4">
+                    <span class="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-on-primary-fixed-variant">@Model.FeaturedEvent.Status</span>
+                    <span class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">Featured workspace</span>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-black tracking-tight">@Model.FeaturedEvent.Title</h2>
+                    <p class="mt-3 text-sm leading-7 text-on-surface-variant">@Model.FeaturedEvent.Summary</p>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="rounded-2xl bg-surface-container-low p-4">
+                        <div class="text-sm font-semibold text-on-surface-variant">Tickets sold</div>
+                        <div class="mt-2 text-3xl font-black text-primary">@Model.FeaturedEvent.TicketsSoldPercentage%</div>
+                    </div>
+                    <div class="rounded-2xl bg-surface-container-low p-4">
+                        <div class="text-sm font-semibold text-on-surface-variant">Revenue</div>
+                        <div class="mt-2 text-3xl font-black text-primary">$@Model.FeaturedEvent.Revenue.ToString("N0")</div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <a asp-action="Manage" asp-route-id="@Model.FeaturedEvent.Id" class="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white transition hover:bg-primary-container">Manage overview</a>
+                    <a asp-action="Schedule" asp-route-id="@Model.FeaturedEvent.Id" class="rounded-full bg-surface-container-high px-5 py-2.5 text-sm font-bold text-on-surface transition hover:bg-surface-dim">Edit schedule</a>
+                    <a asp-action="Media" asp-route-id="@Model.FeaturedEvent.Id" class="rounded-full bg-surface-container-high px-5 py-2.5 text-sm font-bold text-on-surface transition hover:bg-surface-dim">Media gallery</a>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<section>
+    <div class="mb-6 flex items-end justify-between gap-4">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Event workspaces</p>
+            <h2 class="mt-2 text-3xl font-black tracking-tight">Managed events</h2>
+        </div>
+        <a asp-action="Create" class="text-sm font-semibold text-primary transition hover:text-primary-container">New event</a>
+    </div>
+    <div class="grid gap-6 xl:grid-cols-2">
+        @foreach (var eventItem in Model.ManagedEvents)
+        {
+            <article class="rounded-[1.75rem] bg-surface-container-lowest p-6 shadow-sm">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary">@eventItem.Category</p>
+                        <h3 class="mt-2 text-2xl font-bold tracking-tight">@eventItem.Title</h3>
+                        <p class="mt-3 text-sm leading-7 text-on-surface-variant">@eventItem.Summary</p>
+                    </div>
+                    <span class="rounded-full bg-surface-container-low px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">@eventItem.Status</span>
+                </div>
+                <div class="mt-5 grid gap-3 text-sm text-on-surface-variant sm:grid-cols-3">
+                    <div class="rounded-2xl bg-surface-container-low p-4">
+                        <div class="text-xs font-bold uppercase tracking-[0.16em]">Date</div>
+                        <div class="mt-2 font-semibold text-on-surface">@eventItem.DateRangeText</div>
+                    </div>
+                    <div class="rounded-2xl bg-surface-container-low p-4">
+                        <div class="text-xs font-bold uppercase tracking-[0.16em]">Attendees</div>
+                        <div class="mt-2 font-semibold text-on-surface">@eventItem.Registrations.Count / @eventItem.Capacity</div>
+                    </div>
+                    <div class="rounded-2xl bg-surface-container-low p-4">
+                        <div class="text-xs font-bold uppercase tracking-[0.16em]">Assets</div>
+                        <div class="mt-2 font-semibold text-on-surface">@eventItem.MediaAssets.Count media files</div>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a asp-action="Manage" asp-route-id="@eventItem.Id" class="rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-container">Overview</a>
+                    <a asp-action="Schedule" asp-route-id="@eventItem.Id" class="rounded-full bg-surface-container-high px-4 py-2.5 text-sm font-bold text-on-surface transition hover:bg-surface-dim">Schedule</a>
+                    <a asp-action="Media" asp-route-id="@eventItem.Id" class="rounded-full bg-surface-container-high px-4 py-2.5 text-sm font-bold text-on-surface transition hover:bg-surface-dim">Media</a>
+                    <a asp-action="Assets" asp-route-id="@eventItem.Id" class="rounded-full bg-surface-container-high px-4 py-2.5 text-sm font-bold text-on-surface transition hover:bg-surface-dim">Assets</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>

@@ -1,0 +1,189 @@
+﻿@using System.Security.Claims
+@{
+    var currentPath = Context.Request.Path.Value ?? "/";
+    var currentUserName = User.FindFirst("display_name")?.Value ?? User.FindFirst(ClaimTypes.Name)?.Value ?? "Guest Explorer";
+    var currentUserRole = User.IsInRole(RoleNames.SuperAdmin)
+        ? RoleNames.SuperAdmin
+        : User.IsInRole(RoleNames.Organizer)
+            ? RoleNames.Organizer
+            : RoleNames.Attendee;
+    var currentUserRoleDisplay = currentUserRole == "SuperAdmin" ? "Super Admin" : currentUserRole;
+    var isGuest = !(User.Identity?.IsAuthenticated ?? false);
+    Func<string, string> navClass = prefix => currentPath.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+    ? "text-primary font-semibold"
+    : "text-on-surface-variant hover:text-primary transition-colors";
+}
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - The Curated Exchange</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline-variant": "#c7c4d8",
+                        "on-primary-fixed": "#0f0069",
+                        "tertiary-container": "#a44100",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "primary-container": "#4f46e5",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-low": "#f3f4f5",
+                        "secondary": "#58579b",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "primary-fixed": "#e2dfff",
+                        "on-primary-container": "#dad7ff",
+                        "surface": "#f8f9fa",
+                        "outline": "#777587",
+                        "on-secondary-fixed": "#140f54",
+                        "on-background": "#191c1d",
+                        "on-surface": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "background": "#f8f9fa",
+                        "surface-tint": "#4d44e3",
+                        "tertiary-fixed": "#ffdbcc",
+                        "secondary-fixed": "#e2dfff",
+                        "on-tertiary-fixed": "#351000",
+                        "on-secondary-fixed-variant": "#413f82",
+                        "secondary-container": "#b6b4ff",
+                        "tertiary": "#7e3000",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#454386",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-bright": "#f8f9fa",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "primary": "#3525cd",
+                        "surface-container-high": "#e7e8e9",
+                        "on-surface-variant": "#464555",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "on-tertiary-container": "#ffd2be",
+                        "inverse-surface": "#2e3132",
+                        "surface-dim": "#d9dadb",
+                        "error-container": "#ffdad6"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EventRegistrationSystem.styles.css" asp-append-version="true" />
+</head>
+
+<body class="min-h-screen bg-surface text-on-surface antialiased">
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute left-[-10%] top-[-10%] h-[28rem] w-[28rem] rounded-full bg-primary/10 blur-[120px]"></div>
+        <div
+            class="absolute bottom-[-12%] right-[-8%] h-[24rem] w-[24rem] rounded-full bg-secondary-container/20 blur-[120px]">
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-50 border-b border-white/50 bg-white/80 backdrop-blur-xl">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+            <div class="flex items-center gap-8">
+                <a asp-controller="Home" asp-action="Index" class="text-xl font-black tracking-tight text-primary">The
+                    Curated Exchange</a>
+                <nav class="hidden items-center gap-6 md:flex">
+                    <a asp-controller="Home" asp-action="Index"
+                        class="@(currentPath == "/" ? "text-primary font-semibold" : "text-on-surface-variant hover:text-primary transition-colors")">Explore</a>
+                    <a asp-controller="Events" asp-action="Dashboard" class="@navClass("/events")">My Events</a>
+                    <a asp-controller="Organizer" asp-action="Dashboard" class="@navClass("/organizer")">Organizer</a>
+                    @if (User.IsInRole(RoleNames.SuperAdmin))
+                    {
+                        <a asp-controller="Admin" asp-action="Users" class="@navClass("/admin")">Admin</a>
+                    }
+                    <a asp-controller="Organizer" asp-action="Create"
+                        class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-container">Create
+                        Event</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-3">
+                @if (isGuest)
+                {
+                    <a asp-controller="Auth" asp-action="Register"
+                        class="rounded-full bg-surface-container-low px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container-high">Create
+                        Account</a>
+                    <a asp-controller="Auth" asp-action="Login"
+                        class="rounded-full bg-surface-container-low px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container-high">Log
+                        In</a>
+                }
+                else
+                {
+                    <div class="hidden rounded-full bg-surface-container-low px-4 py-2 text-sm md:block">
+                        <div class="font-semibold">@currentUserName</div>
+                        <div class="text-[11px] uppercase tracking-[0.18em] text-on-surface-variant">@currentUserRoleDisplay
+                        </div>
+                    </div>
+                    <a asp-controller="Auth" asp-action="Manage"
+                        class="rounded-full bg-surface-container-low px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container-high">Account</a>
+                    <form asp-controller="Auth" asp-action="Logout" method="post" class="inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit"
+                            class="rounded-full bg-surface-container-highest px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-dim">Log
+                            Out</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </header>
+
+    @if (TempData["FlashMessage"] is string flashMessage)
+    {
+        <div class="mx-auto mt-6 max-w-7xl px-6">
+            <div class="rounded-2xl bg-primary px-5 py-4 text-sm font-medium text-white shadow-lg shadow-primary/10">
+                @flashMessage</div>
+        </div>
+    }
+
+    @if (TempData["FlashError"] is string flashError)
+    {
+        <div class="mx-auto mt-6 max-w-7xl px-6">
+            <div class="rounded-2xl bg-error-container px-5 py-4 text-sm font-medium text-on-error-container">@flashError
+            </div>
+        </div>
+    }
+
+    <main class="mx-auto max-w-7xl px-6 py-8 md:py-10">
+        @RenderBody()
+    </main>
+
+    <footer class="border-t border-outline-variant/20 bg-white/60">
+        <div
+            class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-on-surface-variant md:flex-row md:items-center md:justify-between">
+            <div class="flex items-center gap-4">
+                <a asp-controller="Home" asp-action="Index" class="hover:text-primary transition-colors">Home</a>
+                <a asp-controller="Events" asp-action="Dashboard" class="hover:text-primary transition-colors">My
+                    Events</a>
+                <a asp-controller="Organizer" asp-action="Dashboard"
+                    class="hover:text-primary transition-colors">Organizer</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

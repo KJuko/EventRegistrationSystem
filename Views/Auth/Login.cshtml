@@ -1,0 +1,55 @@
+@model LoginPageViewModel
+@{
+    ViewData["Title"] = "Log In";
+}
+
+<div class="mx-auto max-w-lg py-8">
+    <div class="mb-10 text-center">
+        <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white shadow-lg">
+            <span class="material-symbols-outlined text-4xl">auto_awesome</span>
+        </div>
+        <h1 class="text-5xl font-black tracking-tight">Welcome back</h1>
+        <p class="mt-4 text-on-surface-variant">Continue managing registrations, schedules, and media from the same workspace.</p>
+    </div>
+
+    <div class="rounded-[2rem] bg-surface-container-lowest p-8 shadow-[0_24px_60px_-24px_rgba(53,37,205,0.16)] md:p-10">
+        <form asp-action="Login" method="post" class="space-y-6">
+            <input asp-for="Next" type="hidden" />
+            <div asp-validation-summary="ModelOnly"></div>
+            <div>
+                <label asp-for="Form.Email" class="mb-2 block text-sm font-semibold text-on-surface"></label>
+                <input asp-for="Form.Email" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary-container" placeholder="organizer@semistash.io" />
+                <span asp-validation-for="Form.Email"></span>
+            </div>
+            <div>
+                <div class="mb-2 flex items-center justify-between gap-4">
+                    <label asp-for="Form.Password" class="block text-sm font-semibold text-on-surface"></label>
+                    <a asp-action="PasswordReset" class="text-sm font-semibold text-primary transition hover:text-primary-container">Forgot password?</a>
+                </div>
+                <input asp-for="Form.Password" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary-container" placeholder="••••••••••••" />
+                <span asp-validation-for="Form.Password"></span>
+            </div>
+            <label class="flex items-center gap-3 rounded-2xl bg-surface-container-low px-4 py-3.5 text-sm font-semibold text-on-surface">
+                <input asp-for="Form.RememberMe" class="h-4 w-4 rounded text-primary focus:ring-primary" />
+                Keep me signed in
+            </label>
+            <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-primary to-primary-container px-6 py-4 text-lg font-bold text-white shadow-lg shadow-primary/10 transition hover:shadow-xl">Log in</button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-on-surface-variant">
+            Need an account?
+            <a asp-action="Register" class="font-semibold text-primary transition hover:text-primary-container">Create one here</a>.
+        </p>
+
+        <div class="mt-8 rounded-2xl bg-surface-container-low p-5 text-sm text-on-surface-variant">
+            <p class="font-semibold text-on-surface">Demo access</p>
+            <p class="mt-2"><span class="font-semibold text-primary">Super Admin</span>: @DemoUserData.SuperAdminEmail / @DemoUserData.SuperAdminPassword</p>
+            <p class="mt-1"><span class="font-semibold text-primary">Organizer</span>: @DemoUserData.OrganizerEmail / @DemoUserData.OrganizerPassword</p>
+            <p class="mt-1"><span class="font-semibold text-primary">Attendee</span>: @DemoUserData.AttendeeEmail / @DemoUserData.AttendeePassword</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

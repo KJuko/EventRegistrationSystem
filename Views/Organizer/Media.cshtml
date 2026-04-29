@@ -1,0 +1,175 @@
+@model MediaPageViewModel
+@{
+    ViewData["Title"] = "Media Gallery";
+}
+
+<section class="mb-10">
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Media upload</p>
+    <h1 class="mt-3 text-5xl font-black tracking-tight">Curate the event gallery</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-on-surface-variant">Upload hero imagery, teaser videos, and documents. Set a cover asset, or create folders to organize the visual narrative.</p>
+</section>
+
+<div class="grid gap-8 lg:grid-cols-[0.78fr_1.22fr]">
+    <div class="space-y-8">
+        <form asp-action="Media" asp-route-id="@Model.Event.Id" method="post" enctype="multipart/form-data" class="rounded-[1.75rem] bg-surface-container-lowest p-8 shadow-sm">
+            <h2 class="text-2xl font-bold">Quick upload</h2>
+            <p class="mt-2 text-sm text-on-surface-variant">Upload a real file into the local `wwwroot/uploads/events/@Model.Event.Id` directory, then save its URL in PostgreSQL.</p>
+            <div asp-validation-summary="ModelOnly" class="mt-6"></div>
+            <div class="mt-6 space-y-5">
+                <div>
+                    <label asp-for="Form.FileName" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.FileName" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Optional override, otherwise the uploaded file name is used" />
+                    <span asp-validation-for="Form.FileName"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.UploadedFile" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.UploadedFile" type="file" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" />
+                    <span asp-validation-for="Form.UploadedFile"></span>
+                    <p class="mt-2 text-xs text-on-surface-variant">Recommended for local storage. The saved URL will point to your app's static `/uploads` folder.</p>
+                </div>
+                <div>
+                    <label asp-for="Form.Url" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.Url" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Optional external https:// URL instead of local upload" />
+                    <span asp-validation-for="Form.Url"></span>
+                </div>
+                <div class="grid gap-5 md:grid-cols-2">
+                    <div>
+                        <label asp-for="Form.Kind" class="mb-2 block text-sm font-semibold"></label>
+                        <select asp-for="Form.Kind" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container">
+                            <option value="@MediaAssetKind.Image">Image</option>
+                            <option value="@MediaAssetKind.Video">Video</option>
+                            <option value="@MediaAssetKind.Document">Document</option>
+                        </select>
+                    </div>
+                    <div class="rounded-2xl bg-surface-container-low px-4 py-3.5 text-sm text-on-surface-variant">
+                        File size is calculated automatically for local uploads.
+                    </div>
+                </div>
+                <div>
+                    <label asp-for="Form.FolderName" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.FolderName" list="folder-options" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                    <datalist id="folder-options">
+                        @foreach (var folder in Model.Event.MediaFolders)
+                        {
+                            <option value="@folder.Name"></option>
+                        }
+                    </datalist>
+                    <span asp-validation-for="Form.FolderName"></span>
+                </div>
+                <label class="flex items-center gap-3 rounded-2xl bg-surface-container-low px-4 py-3.5 text-sm font-semibold text-on-surface">
+                    <input asp-for="Form.SetAsCover" class="h-4 w-4 rounded text-primary focus:ring-primary" />
+                    Set this upload as the event cover
+                </label>
+                <button type="submit" class="w-full rounded-full bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-container">Upload asset</button>
+            </div>
+        </form>
+
+        <form asp-action="CreateFolder" asp-route-id="@Model.Event.Id" method="post" class="rounded-[1.75rem] bg-surface-container-lowest p-8 shadow-sm">
+            <h2 class="text-2xl font-bold">Create folder</h2>
+            <div class="mt-6 space-y-5">
+                <div>
+                    <label asp-for="FolderForm.Name" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="FolderForm.Name" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Social Media Kit" />
+                    <span asp-validation-for="FolderForm.Name"></span>
+                </div>
+                <div>
+                    <label asp-for="FolderForm.Description" class="mb-2 block text-sm font-semibold"></label>
+                    <textarea asp-for="FolderForm.Description" rows="3" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Optional notes for the asset collection"></textarea>
+                </div>
+                <button type="submit" class="rounded-full bg-surface-container-high px-5 py-3 text-sm font-bold text-on-surface transition hover:bg-surface-dim">Add folder</button>
+            </div>
+        </form>
+    </div>
+
+    <section class="space-y-8">
+        <div class="rounded-[1.75rem] bg-primary p-7 text-white shadow-[0_24px_64px_-24px_rgba(53,37,205,0.45)]">
+            <div class="flex items-center justify-between gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-primary-container">Storage intelligence</p>
+                    <h2 class="mt-3 text-2xl font-bold">@Model.Event.Title</h2>
+                </div>
+                <span class="material-symbols-outlined text-4xl">perm_media</span>
+            </div>
+            <div class="mt-6 grid gap-4 sm:grid-cols-3">
+                <div class="rounded-2xl bg-white/10 p-4">
+                    <div class="text-xs font-bold uppercase tracking-[0.16em] text-on-primary-container">Assets</div>
+                    <div class="mt-2 text-3xl font-black">@Model.Event.MediaAssets.Count</div>
+                </div>
+                <div class="rounded-2xl bg-white/10 p-4">
+                    <div class="text-xs font-bold uppercase tracking-[0.16em] text-on-primary-container">Folders</div>
+                    <div class="mt-2 text-3xl font-black">@Model.Event.MediaFolders.Count</div>
+                </div>
+                <div class="rounded-2xl bg-white/10 p-4">
+                    <div class="text-xs font-bold uppercase tracking-[0.16em] text-on-primary-container">Cover</div>
+                    <div class="mt-2 text-lg font-bold">@(Model.Event.CoverAsset?.FileName ?? "Not set")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-[1.75rem] bg-surface-container-lowest p-7 shadow-sm">
+            <div class="mb-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">Recent uploads</h2>
+                <a asp-action="Assets" asp-route-id="@Model.Event.Id" class="text-sm font-semibold text-primary transition hover:text-primary-container">Open asset library</a>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2">
+                @foreach (var asset in Model.Event.MediaAssets)
+                {
+                    <article class="overflow-hidden rounded-[1.5rem] bg-surface-container-low">
+                        <div class="aspect-[4/3] overflow-hidden bg-surface-container-high">
+                            @if (asset.Kind == MediaAssetKind.Image)
+                            {
+                                <img src="@asset.Url" alt="@asset.FileName" class="h-full w-full object-cover" />
+                            }
+                            else if (asset.Kind == MediaAssetKind.Video)
+                            {
+                                <video src="@asset.Url" class="h-full w-full object-cover" controls preload="metadata"></video>
+                            }
+                            else
+                            {
+                                <div class="flex h-full items-center justify-center p-6 text-center">
+                                    <div>
+                                        <span class="material-symbols-outlined text-5xl text-primary">description</span>
+                                        <p class="mt-3 text-sm font-semibold text-on-surface">@asset.FileName</p>
+                                        <a href="@asset.Url" target="_blank" rel="noreferrer" class="mt-3 inline-flex rounded-full bg-primary px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-white">Open file</a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="space-y-4 p-5">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <p class="text-sm font-bold">@asset.FileName</p>
+                                    <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant">@asset.Kind • @asset.SizeInMb MB</p>
+                                </div>
+                                @if (asset.IsCover)
+                                {
+                                    <span class="rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-white">Cover</span>
+                                }
+                            </div>
+                            <div class="flex items-center justify-between gap-4 text-sm text-on-surface-variant">
+                                <span>@asset.FolderName</span>
+                                <span>@asset.UploadedAtUtc.ToLocalTime().ToString("MMM dd, HH:mm")</span>
+                            </div>
+                            <div class="flex gap-3">
+                                @if (!asset.IsCover)
+                                {
+                                    <form asp-action="SetCover" asp-route-id="@Model.Event.Id" asp-route-assetId="@asset.Id" method="post" class="flex-1">
+                                        <button type="submit" class="w-full rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-container">Set as cover</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <div class="flex-1 rounded-full bg-surface-container-high px-4 py-2.5 text-center text-sm font-bold text-on-surface">Active cover</div>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

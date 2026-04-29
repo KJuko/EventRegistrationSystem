@@ -1,0 +1,149 @@
+@model EventDetailsViewModel
+@{
+    ViewData["Title"] = Model.Event.Title;
+}
+
+<section class="relative overflow-hidden rounded-[2rem] bg-primary-container text-white">
+    <img src="@Model.Event.CoverImageUrl" alt="@Model.Event.Title" class="absolute inset-0 h-full w-full object-cover opacity-30" />
+    <div class="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary-container/85 to-primary-container/70"></div>
+    <div class="relative grid gap-8 p-8 md:p-12 lg:grid-cols-[1fr_0.38fr] lg:items-end">
+        <div>
+            <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-on-primary-container backdrop-blur">
+                <span class="material-symbols-outlined text-base">event_available</span>
+                @Model.Event.FeaturedLabel
+            </div>
+            <h1 class="mt-6 max-w-4xl text-5xl font-black tracking-tight md:text-6xl">@Model.Event.Title</h1>
+            <p class="mt-5 max-w-3xl text-lg leading-8 text-on-primary-container">@Model.Event.Description</p>
+            <div class="mt-8 grid gap-4 text-sm font-medium text-on-primary-container md:grid-cols-3">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">calendar_today</span>
+                    <span>@Model.Event.DateRangeText</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">schedule</span>
+                    <span>@Model.Event.StartTime.ToString("hh\\:mm") - @Model.Event.EndTime.ToString("hh\\:mm")</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>@Model.Event.Location</span>
+                </div>
+            </div>
+        </div>
+        <div class="rounded-[1.75rem] bg-white/10 p-6 backdrop-blur">
+            <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-primary-container">At a glance</p>
+            <div class="mt-5 space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-on-primary-container">Sessions</span>
+                    <span class="text-2xl font-black text-white">@Model.Event.Sessions.Count</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-on-primary-container">Attendees</span>
+                    <span class="text-2xl font-black text-white">@Model.Event.Registrations.Count</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-on-primary-container">Price</span>
+                    <span class="text-2xl font-black text-white">$@Model.Event.TicketPrice</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="mt-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+    <aside class="space-y-6">
+        <div class="rounded-[1.75rem] bg-surface-container-lowest p-7 shadow-sm">
+            <div class="mb-5 flex items-center justify-between gap-4">
+                <h2 class="text-2xl font-bold">Registration</h2>
+                <span class="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-on-primary-fixed-variant">@Model.Event.Visibility</span>
+            </div>
+
+            @if (Model.AlreadyRegistered)
+            {
+                <div class="rounded-2xl bg-primary-fixed p-5 text-sm text-on-primary-fixed-variant">
+                    You are already registered for this event with <span class="font-semibold">@Model.CurrentUser.Email</span>.
+                </div>
+            }
+            else
+            {
+                <form asp-action="Register" asp-route-id="@Model.Event.Id" method="post" class="space-y-5">
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <div>
+                        <label asp-for="RegistrationForm.FullName" class="mb-2 block text-sm font-semibold"></label>
+                        <input asp-for="RegistrationForm.FullName" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                        <span asp-validation-for="RegistrationForm.FullName"></span>
+                    </div>
+                    <div>
+                        <label asp-for="RegistrationForm.Email" class="mb-2 block text-sm font-semibold"></label>
+                        <input asp-for="RegistrationForm.Email" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                        <span asp-validation-for="RegistrationForm.Email"></span>
+                    </div>
+                    <div>
+                        <label asp-for="RegistrationForm.Company" class="mb-2 block text-sm font-semibold"></label>
+                        <input asp-for="RegistrationForm.Company" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Optional company or team" />
+                        <span asp-validation-for="RegistrationForm.Company"></span>
+                    </div>
+                    <div>
+                        <label asp-for="RegistrationForm.TicketType" class="mb-2 block text-sm font-semibold"></label>
+                        <select asp-for="RegistrationForm.TicketType" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container">
+                            <option>General Admission</option>
+                            <option>Full Pass</option>
+                            <option>VIP Pass</option>
+                        </select>
+                        <span asp-validation-for="RegistrationForm.TicketType"></span>
+                    </div>
+                    <button type="submit" class="w-full rounded-2xl bg-primary px-6 py-4 text-base font-bold text-white shadow-lg shadow-primary/10 transition hover:bg-primary-container">Confirm registration</button>
+                </form>
+            }
+        </div>
+
+        <div class="rounded-[1.75rem] bg-surface-container-lowest p-7 shadow-sm">
+            <h2 class="text-xl font-bold">Why attendees join</h2>
+            <ul class="mt-4 space-y-3 text-sm leading-7 text-on-surface-variant">
+                <li class="flex gap-3"><span class="material-symbols-outlined text-primary">check_circle</span> Clear, session-based programming with a live agenda.</li>
+                <li class="flex gap-3"><span class="material-symbols-outlined text-primary">check_circle</span> Registration confirmations that feed back into attendee and organizer dashboards.</li>
+                <li class="flex gap-3"><span class="material-symbols-outlined text-primary">check_circle</span> Media-backed event storytelling that matches the original HTML concept.</li>
+            </ul>
+        </div>
+    </aside>
+
+    <section class="space-y-6">
+        <div class="rounded-[1.75rem] bg-surface-container-lowest p-7 shadow-sm">
+            <div class="mb-6 flex items-center justify-between gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.22em] text-primary">Agenda</p>
+                    <h2 class="mt-2 text-3xl font-black tracking-tight">Scheduled sessions</h2>
+                </div>
+                <span class="text-sm font-semibold text-on-surface-variant">@Model.Event.TimeZone</span>
+            </div>
+            <div class="space-y-4">
+                @foreach (var session in Model.Event.Sessions.OrderBy(item => item.Date).ThenBy(item => item.StartTime))
+                {
+                    <article class="rounded-2xl bg-surface-container-low p-5">
+                        <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                            <div class="md:w-40">
+                                <p class="text-sm font-bold text-primary">@session.StartTime.ToString("hh\\:mm") - @session.EndTime.ToString("hh\\:mm")</p>
+                                <p class="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">@session.Date.ToString("MMM dd")</p>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3">
+                                    <span class="rounded-full bg-surface-container-highest px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant">@session.Track</span>
+                                    @if (session.IsLive)
+                                    {
+                                        <span class="rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-white">Live</span>
+                                    }
+                                </div>
+                                <h3 class="mt-3 text-xl font-bold tracking-tight">@session.Title</h3>
+                                <p class="mt-2 text-sm text-on-surface-variant">@session.Speaker</p>
+                            </div>
+                            <div class="rounded-2xl bg-surface-container-highest px-4 py-3 text-sm font-semibold text-on-surface-variant">@session.Room</div>
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,113 @@
+@model CreateEventPageViewModel
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<section class="mb-10">
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-primary">Organizer flow</p>
+    <h1 class="mt-3 text-5xl font-black tracking-tight">Create a new event</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-on-surface-variant">
+        This page mirrors the original event creation screens, but now it posts to a real MVC controller and stores the draft in memory.
+    </p>
+</section>
+
+<form asp-action="Create" method="post" class="grid gap-8 lg:grid-cols-[1fr_0.38fr]">
+    <div class="space-y-8">
+        <div asp-validation-summary="ModelOnly"></div>
+        <section class="rounded-[1.75rem] bg-surface-container-lowest p-8 shadow-sm">
+            <div class="mb-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold">Event identity</h2>
+                <span class="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-on-primary-fixed-variant">Step 1</span>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2">
+                <div class="md:col-span-2">
+                    <label asp-for="Form.Title" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.Title" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Global Architecture Summit 2026" />
+                    <span asp-validation-for="Form.Title"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.Category" class="mb-2 block text-sm font-semibold"></label>
+                    <select asp-for="Form.Category" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container">
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Form.Category"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.Visibility" class="mb-2 block text-sm font-semibold"></label>
+                    <select asp-for="Form.Visibility" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container">
+                        <option value="@EventVisibility.Public">Public</option>
+                        <option value="@EventVisibility.Private">Private</option>
+                    </select>
+                    <span asp-validation-for="Form.Visibility"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.StartDate" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.StartDate" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                    <span asp-validation-for="Form.StartDate"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.TimeZone" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.TimeZone" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="UTC+07:00" />
+                    <span asp-validation-for="Form.TimeZone"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.StartTime" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.StartTime" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                    <span asp-validation-for="Form.StartTime"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.EndTime" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.EndTime" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" />
+                    <span asp-validation-for="Form.EndTime"></span>
+                </div>
+                <div class="md:col-span-2">
+                    <label asp-for="Form.Location" class="mb-2 block text-sm font-semibold"></label>
+                    <input asp-for="Form.Location" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Venue, city, district" />
+                    <span asp-validation-for="Form.Location"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="rounded-[1.75rem] bg-surface-container-lowest p-8 shadow-sm">
+            <h2 class="text-2xl font-bold">Editorial narrative</h2>
+            <div class="mt-6 space-y-6">
+                <div>
+                    <label asp-for="Form.Summary" class="mb-2 block text-sm font-semibold"></label>
+                    <textarea asp-for="Form.Summary" rows="3" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Short summary shown on cards and previews"></textarea>
+                    <span asp-validation-for="Form.Summary"></span>
+                </div>
+                <div>
+                    <label asp-for="Form.Description" class="mb-2 block text-sm font-semibold"></label>
+                    <textarea asp-for="Form.Description" rows="9" class="w-full rounded-2xl border-0 bg-surface-container-low px-4 py-3.5 focus:ring-2 focus:ring-primary-container" placeholder="Describe the experience, audience, and outcomes"></textarea>
+                    <span asp-validation-for="Form.Description"></span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <aside class="space-y-6">
+        <div class="rounded-[1.75rem] bg-primary p-7 text-white shadow-[0_24px_64px_-24px_rgba(53,37,205,0.45)]">
+            <p class="text-xs font-bold uppercase tracking-[0.22em] text-on-primary-container">What happens next</p>
+            <ul class="mt-5 space-y-3 text-sm leading-7 text-on-primary-container">
+                <li>Save the draft to PostgreSQL through EF Core.</li>
+                <li>Open the management dashboard for that event.</li>
+                <li>Continue with schedule, media, and asset routes.</li>
+            </ul>
+        </div>
+        <div class="rounded-[1.75rem] bg-surface-container-lowest p-7 shadow-sm">
+            <h2 class="text-xl font-bold">Action bar</h2>
+            <p class="mt-3 text-sm leading-7 text-on-surface-variant">The controller stays intentionally light. Validation happens through model binding, then the repository stores the new event.</p>
+            <div class="mt-6 flex flex-col gap-3">
+                <button type="submit" class="rounded-full bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-container">Create event draft</button>
+                <a asp-action="Dashboard" class="rounded-full bg-surface-container-high px-5 py-3 text-center text-sm font-bold text-on-surface transition hover:bg-surface-dim">Back to dashboard</a>
+            </div>
+        </div>
+    </aside>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
